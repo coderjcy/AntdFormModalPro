@@ -1,0 +1,47 @@
+{
+  "name": "antd-form-modal-pro",
+  "version": "1.0.5",
+  "private": false,
+  "keywords": [
+    "vue3",
+    "frontend",
+    "antd",
+    "form",
+    "dialog",
+    "modal"
+  ],
+  "files": [
+    "*"
+  ],
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "ant-design-vue": "^4.2.6",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.9.0",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "@vue/tsconfig": "^0.5.1",
+    "npm-run-all2": "^7.0.1",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.10",
+    "vite-plugin-dts": "^4.3.0",
+    "vite-plugin-vue-devtools": "^7.5.4",
+    "vue-tsc": "^2.1.10"
+  }
+}
