@@ -128,13 +128,13 @@
           <template #icon>
             <CloseOutlined />
           </template>
-          取消</a-button
+          {{ cancelButtonText }}</a-button
         >
         <a-button type="primary" html-type="submit">
           <template #icon>
             <CheckOutlined />
           </template>
-          保存</a-button
+          {{ confirmButtonText }}</a-button
         >
       </div>
     </a-form>
@@ -167,6 +167,8 @@ const props = withDefaults(defineProps<IProps>(), {
   minHeight: "300px",
   span: 24,
   dateValueFormat: "x",
+  confirmButtonText: "保存",
+  cancelButtonText: "取消",
 });
 const emit = defineEmits(["submit"]);
 const formRef = ref<FormInstance>();
