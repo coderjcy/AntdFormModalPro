@@ -20,6 +20,7 @@ import {
   Cascader,
   InputNumber,
   Upload,
+  ConfigProvider,
 } from "ant-design-vue";
 const components = [
   Modal,
@@ -41,6 +42,7 @@ const components = [
   Cascader,
   InputNumber,
   Upload,
+  ConfigProvider,
 ];
 export type * from "./src/type.ts";
 export type AntdFormModal = typeof AntdFormModal;

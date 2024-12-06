@@ -1,143 +1,179 @@
 <template>
-  <a-modal v-model:open="isShow" :destroy-on-close="true" width="1000px" :afterClose="handleClose">
-    <template #title>{{ title }}</template>
-    <a-form
-      ref="formRef"
-      :model="formData"
-      :rules="rules"
-      :style="{ '--label-width': labelWidth, maxHeight, minHeight }"
-      :disabled="readonly"
-      @finish="handleSubmit"
-    >
-      <a-row>
-        <template v-for="item in formItems" :key="item.prop">
-          <a-col :span="item.span ?? span" v-if="item.type === 'custom-full'">
-            <slot :name="item.prop" :formData="formData" :config="item"></slot>
-          </a-col>
-          <template v-else>
-            <a-col :span="item.span ?? span" v-if="dynamicItem[item.prop] ?? true">
-              <a-form-item
-                v-if="dynamicItem[item.prop] ?? true"
-                :label="item.label"
-                :name="item.prop"
-                :required="item.required"
-                :style="{ '--label-width': item.labelWidth ?? labelWidth }"
-              >
-                <!-- 文本输入 -->
-                <template v-if="item.type === 'input'">
-                  <a-input v-model:value="formData[item.prop]" allowClear v-bind="item.attrs" v-on="item.events ?? {}" />
-                </template>
-                <!-- 文本域输入 -->
-                <template v-else-if="item.type === 'textarea'">
-                  <a-textarea
+  <a-modal v-model:open="isShow" :destroy-on-close="true" :afterClose="handleClose" width="1000px">
+    <template #title>
+      <slot name="title">{{ title }}</slot>
+    </template>
+    <a-config-provider :locale="zhCN" :theme="{ algorithm: _theme }">
+      <!-- <a-config-provider :locale="zhCN"> -->
+      <a-form
+        ref="formRef"
+        :model="formData"
+        :rules="rules"
+        :layout
+        :labelWrap="true"
+        :style="{ '--label-width': labelWidth, maxHeight, minHeight }"
+        :disabled="readonly"
+        @finish="handleSubmit"
+      >
+        <a-row>
+          <template v-for="item in formItems" :key="item.prop">
+            <a-col :span="item.span ?? span" v-if="item.type === 'custom-full'">
+              <slot :name="item.prop" :formData="formData" :config="item"></slot>
+            </a-col>
+            <template v-else>
+              <a-col :span="item.span ?? span" v-if="dynamicItem[item.prop] ?? true">
+                <a-form-item
+                  v-if="dynamicItem[item.prop] ?? true"
+                  :label="item.label"
+                  :name="item.prop"
+                  :required="item.required"
+                  :style="{ '--label-width': item.labelWidth ?? labelWidth }"
+                >
+                  <!-- 文本输入 -->
+                  <template v-if="item.type === 'input'">
+                    <a-input
+                      v-model:value="formData[item.prop]"
+                      allowClear
+                      :placeholder="`请输入${item.label}`"
+                      v-bind="item.attrs"
+                      v-on="item.events ?? {}"
+                    />
+                  </template>
+                  <!-- 文本域输入 -->
+                  <template v-else-if="item.type === 'textarea'">
+                    <a-textarea
+                      v-model:value="formData[item.prop]"
+                      :autoSize="{ minRows: 3 }"
+                      allowClear
+                      :placeholder="`请输入${item.label}`"
+                      v-bind="item.attrs"
+                      v-on="item.events ?? {}"
+                    />
+                  </template>
+                  <!-- 日期时间选择 -->
+                  <a-date-picker
+                    v-else-if="item.type === 'date' || item.type === 'datetime'"
                     v-model:value="formData[item.prop]"
-                    :autoSize="{ minRows: 3 }"
-                    allowClear
+                    :showTime="item.type === 'datetime'"
+                    :valueFormat="dateValueFormat"
+                    :format="formatMap[item.type]"
                     v-bind="item.attrs"
                     v-on="item.events ?? {}"
                   />
-                </template>
-                <!-- 日期时间选择 -->
-                <a-date-picker
-                  v-else-if="item.type === 'date' || item.type === 'datetime'"
-                  v-model:value="formData[item.prop]"
-                  :showTime="item.type === 'datetime'"
-                  :valueFormat="dateValueFormat"
-                  :format="formatMap[item.type]"
-                  v-bind="item.attrs"
-                  v-on="item.events ?? {}"
-                />
-                <a-range-picker
-                  v-else-if="item.type === 'daterange' || item.type === 'datetimerange'"
-                  v-model:value="formData[item.prop]"
-                  :showTime="item.type === 'datetimerange'"
-                  :valueFormat="dateValueFormat"
-                  :format="formatMap[item.type]"
-                  v-bind="item.attrs"
-                  v-on="item.events ?? {}"
-                />
-                <a-time-picker v-else-if="item.type === 'time'" v-model:value="formData[item.prop]" v-bind="item.attrs" v-on="item.events ?? {}" />
-                <a-time-range-picker
-                  v-else-if="item.type === 'timerange'"
-                  v-model:value="formData[item.prop]"
-                  v-bind="item.attrs"
-                  v-on="item.events ?? {}"
-                />
-                <!-- 数字输入 -->
-                <template v-else-if="item.type === 'number'">
-                  <a-input-number v-model:value="formData[item.prop]" style="width: 100%" v-bind="item.attrs" v-on="item.events ?? {}" />
-                </template>
-                <!-- 级联选择 -->
-                <template v-else-if="item.type === 'cascader'">
-                  <a-cascader v-model:value="formData[item.prop]" expand-trigger="hover" v-bind="item.attrs" v-on="item.events ?? {}" />
-                </template>
-                <!-- 下拉选择 -->
-                <template v-else-if="item.type === 'select'">
-                  <a-select v-model:value="formData[item.prop]" v-bind="item.attrs" v-on="item.events ?? {}"> </a-select>
-                </template>
-                <!--  图片上传 -->
-                <template v-else-if="item.type === 'image'">
-                  <a-upload
-                    v-model:file-list="formData[item.prop]"
-                    list-type="picture-card"
-                    @preview="handlePreview"
-                    :beforeUpload="() => false"
+                  <a-range-picker
+                    v-else-if="item.type === 'daterange' || item.type === 'datetimerange'"
+                    v-model:value="formData[item.prop]"
+                    :showTime="item.type === 'datetimerange'"
+                    :valueFormat="dateValueFormat"
+                    :format="formatMap[item.type]"
                     v-bind="item.attrs"
-                  >
-                    <div v-if="(formData[item.prop]?.length ?? 0) < (item.attrs?.maxCount ?? Number.MAX_SAFE_INTEGER)">
-                      <PlusOutlined />
-                      <div style="margin-top: 8px">上传图片</div>
-                    </div>
-                  </a-upload>
+                    v-on="item.events ?? {}"
+                  />
+                  <a-time-picker
+                    v-else-if="item.type === 'time'"
+                    v-model:value="formData[item.prop]"
+                    format="HH:mm"
+                    valueFormat="HH:mm"
+                    v-bind="item.attrs"
+                    v-on="item.events ?? {}"
+                  />
+                  <a-time-range-picker
+                    v-else-if="item.type === 'timerange'"
+                    v-model:value="formData[item.prop]"
+                    format="HH:mm"
+                    valueFormat="HH:mm"
+                    v-bind="item.attrs"
+                    v-on="item.events ?? {}"
+                  />
+                  <!-- 数字输入 -->
+                  <template v-else-if="item.type === 'number'">
+                    <a-input-number
+                      v-model:value="formData[item.prop]"
+                      style="width: 100%"
+                      :placeholder="`请输入${item.label}`"
+                      v-bind="item.attrs"
+                      v-on="item.events ?? {}"
+                    />
+                  </template>
+                  <!-- 级联选择 -->
+                  <template v-else-if="item.type === 'cascader'">
+                    <a-cascader
+                      v-model:value="formData[item.prop]"
+                      expand-trigger="hover"
+                      :placeholder="`请选择${item.label}`"
+                      v-bind="item.attrs"
+                      v-on="item.events ?? {}"
+                    />
+                  </template>
+                  <!-- 下拉选择 -->
+                  <template v-else-if="item.type === 'select'">
+                    <a-select v-model:value="formData[item.prop]" :placeholder="`请选择${item.label}`" v-bind="item.attrs" v-on="item.events ?? {}">
+                    </a-select>
+                  </template>
+                  <!--  图片上传 -->
+                  <template v-else-if="item.type === 'image'">
+                    <a-upload
+                      v-model:file-list="formData[item.prop]"
+                      list-type="picture-card"
+                      @preview="handlePreview"
+                      :beforeUpload="() => false"
+                      v-bind="item.attrs"
+                    >
+                      <div v-if="(formData[item.prop]?.length ?? 0) < (item.attrs?.maxCount ?? Number.MAX_SAFE_INTEGER)">
+                        <PlusOutlined />
+                        <div style="margin-top: 8px">上传图片</div>
+                      </div>
+                    </a-upload>
 
-                  <a-modal :open="previewInfo.visible" :title="previewInfo.title" :footer="null" @cancel="handlePreviewCancel">
-                    <img style="width: 100%" :src="previewInfo.image" />
-                  </a-modal>
-                </template>
-                <!-- 文件上传 -->
-                <template v-else-if="item.type === 'file'">
-                  <a-upload v-model:file-list="formData[item.prop]" :beforeUpload="() => false" v-bind="item.attrs">
-                    <a-button
-                      >上传文件
-                      <template #icon>
-                        <UploadOutlined />
-                      </template>
-                    </a-button>
-                  </a-upload>
-                </template>
-                <!-- radio选择 -->
-                <template v-else-if="item.type === 'radio'">
-                  <a-radio-group v-model:value="formData[item.prop]" v-bind="item.attrs" v-on="item.events ?? {}" />
-                </template>
-                <!-- checkbox选择 -->
-                <template v-else-if="item.type === 'checkbox'">
-                  <a-checkbox-group v-model:value="formData[item.prop]" v-bind="item.attrs" v-on="item.events ?? {}" />
-                </template>
-                <!-- 自定义 -->
-                <template v-else-if="item.type === 'custom'">
-                  <slot :name="item.prop" :formData="formData" :config="item"></slot>
-                </template>
-              </a-form-item>
-            </a-col>
+                    <a-modal :open="previewInfo.visible" :title="previewInfo.title" :footer="null" @cancel="handlePreviewCancel">
+                      <img style="width: 100%" :src="previewInfo.image" />
+                    </a-modal>
+                  </template>
+                  <!-- 文件上传 -->
+                  <template v-else-if="item.type === 'file'">
+                    <a-upload v-model:file-list="formData[item.prop]" :beforeUpload="() => false" v-bind="item.attrs">
+                      <a-button
+                        >上传文件
+                        <template #icon>
+                          <UploadOutlined />
+                        </template>
+                      </a-button>
+                    </a-upload>
+                  </template>
+                  <!-- radio选择 -->
+                  <template v-else-if="item.type === 'radio'">
+                    <a-radio-group v-model:value="formData[item.prop]" style="margin-left: 20px" v-bind="item.attrs" v-on="item.events ?? {}" />
+                  </template>
+                  <!-- checkbox选择 -->
+                  <template v-else-if="item.type === 'checkbox'">
+                    <a-checkbox-group v-model:value="formData[item.prop]" v-bind="item.attrs" v-on="item.events ?? {}" />
+                  </template>
+                  <!-- 自定义 -->
+                  <template v-else-if="item.type === 'custom'">
+                    <slot :name="item.prop" :formData="formData" :config="item"></slot>
+                  </template>
+                </a-form-item>
+              </a-col>
+            </template>
           </template>
-        </template>
-      </a-row>
-      <slot name="other" :formData="formData"></slot>
-      <div v-if="!readonly" style="position: absolute; bottom: 20px; right: 24px; display: flex; justify-content: flex-end">
-        <a-button style="margin-right: 10px" @click="isShow = false">
-          <template #icon>
-            <CloseOutlined />
-          </template>
-          {{ cancelButtonText }}</a-button
-        >
-        <a-button type="primary" html-type="submit">
-          <template #icon>
-            <CheckOutlined />
-          </template>
-          {{ confirmButtonText }}</a-button
-        >
-      </div>
-    </a-form>
+        </a-row>
+        <slot name="other" :formData="formData"></slot>
+        <div v-if="!readonly" style="position: absolute; bottom: 20px; right: 24px; display: flex; justify-content: flex-end">
+          <a-button style="margin-right: 10px" @click="isShow = false">
+            <template #icon>
+              <CloseOutlined />
+            </template>
+            {{ cancelButtonText }}</a-button
+          >
+          <a-button type="primary" html-type="submit">
+            <template #icon>
+              <CheckOutlined />
+            </template>
+            {{ confirmButtonText }}</a-button
+          >
+        </div>
+      </a-form>
+    </a-config-provider>
 
     <template #footer>
       <div v-if="!readonly" style="height: 32px; width: 100%"></div>
@@ -148,9 +184,13 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { CheckOutlined, CloseOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import zhCN from "ant-design-vue/es/locale/zh_CN";
+import { theme } from "ant-design-vue";
 
 import type { IProps, Iobject } from "./type.js";
 import type { FormInstance } from "ant-design-vue";
+
+const { darkAlgorithm, defaultAlgorithm } = theme;
 const formatMap = {
   date: "YYYY-MM-DD",
   datetime: "YYYY-MM-DD HH:mm:ss",
@@ -169,8 +209,9 @@ const props = withDefaults(defineProps<IProps>(), {
   dateValueFormat: "x",
   confirmButtonText: "保存",
   cancelButtonText: "取消",
+  layout: "horizontal",
 });
-const emit = defineEmits(["submit"]);
+const emit = defineEmits(["submit", "close"]);
 const formRef = ref<FormInstance>();
 const formData = ref<Iobject>({});
 const dynamicItem = ref<Iobject>({});
@@ -201,6 +242,7 @@ const setupForm = () => {
 };
 const handleClose = () => {
   for (const item of props.formItems) formData.value[item.prop] = item.initialValue;
+  emit("close");
 };
 const handleSubmit = async () => {
   const res = props.submitCallback && (await props.submitCallback!(formData));
@@ -233,18 +275,43 @@ const handlePreview = async (file: any) => {
 };
 watch(
   () => props.data,
-  (newData) => newData && Object.keys(formData.value).forEach((key) => (formData.value[key] = newData[key]))
+  (newData) => {
+    if (newData && Object.keys(newData).length) Object.keys(formData.value).forEach((key) => (formData.value[key] = newData[key]));
+    else for (const item of props.formItems) formData.value[item.prop] = item.initialValue;
+  }
 );
 setupForm();
 defineExpose({
   formRef,
   formData,
 });
+const _theme = ref(defaultAlgorithm);
+const watchTheme = () => {
+  const targetNode = document.querySelector("body") as any;
+  if ([...targetNode.classList].includes("dark")) _theme.value = darkAlgorithm;
+  const observer = new MutationObserver((mutationsList, observer) => {
+    for (let mutation of mutationsList) {
+      if (mutation.attributeName === "class") {
+        if ([...targetNode.classList].includes("dark")) {
+          console.log("当前是暗黑模式");
+          _theme.value = darkAlgorithm;
+        } else {
+          console.log("当前不是暗黑模式");
+          _theme.value = defaultAlgorithm;
+        }
+      }
+    }
+  });
+  const config = { attributes: true, attributeFilter: ["class"] };
+  observer.observe(targetNode, config);
+};
+watchTheme();
 </script>
 
 <style scoped>
 .ant-form {
   overflow: auto;
+  padding-right: 10px;
 }
 :deep(.ant-picker) {
   width: 100% !important;
@@ -257,17 +324,32 @@ defineExpose({
   color: rgba(0, 0, 0, 0.25);
 }
 
-:deep(input[disabled]) {
-  color: rgba(0, 0, 0, 0.8) !important;
-}
-:deep(.ant-select-selector) {
-  color: rgba(0, 0, 0, 0.8);
-}
-:deep(textarea[disabled]) {
+:deep(input[disabled]),
+:deep(.ant-select-disabled .ant-select-selector),
+:deep(textarea[disabled]),
+:deep(.ant-radio-wrapper-disabled) {
   color: rgba(0, 0, 0, 0.8) !important;
 }
 
-:deep(.ant-select-disabled .ant-select-selector) {
-  color: rgba(0, 0, 0, 0.8) !important;
+:deep(.ant-radio-checked.ant-radio-disabled .ant-radio-inner) {
+  border-color: #1677ff !important;
+  background: #1677ff !important;
+}
+:deep(.ant-radio-checked.ant-radio-disabled .ant-radio-inner::after) {
+  background-color: #fff !important;
+}
+</style>
+<style>
+.dark input[disabled],
+.dark .ant-select-disabled .ant-select-selector,
+.dark textarea[disabled],
+.dark .ant-radio-wrapper-disabled {
+  color: #999 !important;
+}
+.dark .ant-modal-content {
+  background: #1f1f1f !important;
+}
+.dark .ant-modal-header {
+  color: #fff !important;
 }
 </style>

@@ -13,8 +13,10 @@ formRef: Ref<FormInstance | undefined, FormInstance | undefined>;
 formData: Ref<Iobject, Iobject>;
 }, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
 submit: (...args: any[]) => void;
+close: (...args: any[]) => void;
 }, string, PublicProps, Readonly<__VLS_PublicProps> & Readonly<{
 onSubmit?: ((...args: any[]) => any) | undefined;
+onClose?: ((...args: any[]) => any) | undefined;
 }>, {
 title: string;
 span: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
@@ -22,6 +24,9 @@ labelWidth: string;
 readonly: boolean;
 minHeight: string;
 dateValueFormat: string;
+cancelButtonText: string;
+confirmButtonText: string;
+layout: "horizontal" | "vertical";
 }, {}, {}, {}, string, ComponentProvideOptions, false, {}, any>;
 
 declare const __VLS_defaults: {
@@ -40,6 +45,7 @@ declare function __VLS_template(): {
         formData: Iobject;
         config: IFormItem;
     }) => any>> & {
+        title?(_: {}): any;
         other?(_: {
             formData: Iobject;
         }): any;
@@ -86,7 +92,6 @@ export declare interface IFormItem {
     events?: {
         [k: string]: Function;
     };
-    children?: IFormItem[];
 }
 
 declare type IFormItemType = "input" | "select" | "number" | "date" | "daterange" | "time" | "timerange" | "datetime" | "datetimerange" | "textarea" | "checkbox" | "radio" | "file" | "image" | "cascader" | "custom" | "custom-full";
@@ -95,7 +100,7 @@ export declare type Iobject = {
     [k: string]: any;
 };
 
-export declare interface IProps extends ModalProps {
+export declare interface IProps {
     formItems: IFormItem[];
     title?: string;
     rules?: {
@@ -110,10 +115,15 @@ export declare interface IProps extends ModalProps {
     maxHeight?: string;
     minHeight?: string;
     dateValueFormat?: string;
+    cancelButtonText?: string;
+    confirmButtonText?: string;
+    layout?: "horizontal" | "vertical";
     submitCallback?: (formData: Ref<{
         [k: string]: any;
     }>) => any;
 }
+
+export declare type IProps2 = IProps & ModalProps;
 
 declare type ISpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
 

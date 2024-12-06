@@ -27,8 +27,6 @@ interface IFormItem {
   label: string;
   prop: string;
   type: IFormItemType;
-  // type: import("vue").PropType<IFormItemType>;
-  // type: PropType<"select" | "input">;
   required?: boolean;
   labelWidth?: string;
   span?: ISpan;
@@ -38,7 +36,7 @@ interface IFormItem {
   events?: { [k: string]: Function };
 }
 
-interface IProps extends ModalProps {
+interface IProps {
   formItems: IFormItem[];
   title?: string;
   rules?: { [k: string]: RuleObject | RuleObject[] };
@@ -51,9 +49,12 @@ interface IProps extends ModalProps {
   dateValueFormat?: string;
   cancelButtonText?: string;
   confirmButtonText?: string;
+  layout?: "horizontal" | "vertical";
   submitCallback?: (formData: Ref<{ [k: string]: any }>) => any;
 }
+type IProps2 = IProps & ModalProps;
 type Iobject = {
   [k: string]: any;
 };
-export type { IProps, IFormItem, Iobject };
+
+export type { IProps, IProps2, IFormItem, Iobject };
