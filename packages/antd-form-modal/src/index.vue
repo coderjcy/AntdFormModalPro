@@ -4,7 +4,6 @@
       <slot name="title">{{ title }}</slot>
     </template>
     <a-config-provider :locale="zhCN" :theme="{ algorithm: _theme }">
-      <!-- <a-config-provider :locale="zhCN"> -->
       <a-form
         ref="formRef"
         :model="formData"
@@ -189,6 +188,7 @@ import { theme } from "ant-design-vue";
 
 import type { IProps, Iobject } from "./type.js";
 import type { FormInstance } from "ant-design-vue";
+import "dayjs/locale/zh-cn";
 
 const { darkAlgorithm, defaultAlgorithm } = theme;
 const formatMap = {
@@ -280,7 +280,6 @@ watch(
     else for (const item of props.formItems) formData.value[item.prop] = item.initialValue;
   }
 );
-setupForm();
 defineExpose({
   formRef,
   formData,
@@ -305,6 +304,7 @@ const watchTheme = () => {
   const config = { attributes: true, attributeFilter: ["class"] };
   observer.observe(targetNode, config);
 };
+setupForm();
 watchTheme();
 </script>
 

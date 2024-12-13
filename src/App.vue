@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <a-config-provider :locale="zhCN">
-      <antdFormModal
+      <!-- <antdFormModal
         v-model="aaa"
         :formItems="[
           {
@@ -11,7 +11,9 @@
             required: true,
           },
         ]"
-      />
+        :locale="zhCN"
+      /> -->
+      <a-date-picker></a-date-picker>
     </a-config-provider>
   </div>
 </template>
@@ -21,6 +23,7 @@ import { ref } from "vue";
 const aaa = ref(true);
 import antdFormModal from "../packages/antd-form-modal/src/index.vue";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
+// import "dayjs/locale/zh-cn";
 </script>
 
 <style scoped lang="less"></style>
