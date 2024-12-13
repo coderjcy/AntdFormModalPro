@@ -33,7 +33,7 @@
 | show         | 控制该表单项是否展示的计算函数 |                                                               (formData: Ref) => boolean;                                                                |      |      |
 | attrs        | 表单项上需要绑定的原生属性     |                                                                          object                                                                          |      |      |
 | events       | 表单项需要监听的原生事件       |                                                                          object                                                                          |      |      |
-|   |                                |                                                                                                                                                          |      |      |
+|              |                                |                                                                                                                                                          |      |      |
 
 4. ### 事件
 
@@ -55,11 +55,10 @@
 | formRef    | 组件中的 a-form 的实例 | object   |
 
 7. ### 黑夜模式：通过在 body 元素上添加“dark”类启用
-
 8. ### 添加下列代码到 /src/components.d.ts 文件中（用于类型提示）
 
 ```typescript
-import type { AntdFormModal, IProps2 as _IProps, IFormItem as _IFormItems } from "antd-form-modal-pro";
+import type { AntdFormModal, IProps as _IProps, IFormItem as _IFormItems } from "antd-form-modal-pro";
 declare module "vue" {
   export interface GlobalComponents {
     AntdFormModal: AntdFormModal;
@@ -72,12 +71,12 @@ declare global {
 export {};
 ```
 
-9. ### tsconfig.json文件中配置
+9. ### tsconfig.json 文件中配置
 
 ```json
 {
-  "compilerOptions":{
-    "moduleResolution": "bundler",
+  "compilerOptions": {
+    "moduleResolution": "bundler"
   }
 }
 ```

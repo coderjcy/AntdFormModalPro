@@ -51,6 +51,8 @@ interface IProps extends ModalProps {
   layout?: "horizontal" | "vertical";
   submitCallback?: (formData: Ref<{ [k: string]: any }>) => any;
 }
+// type IProps2 = IProps & ModalProps;
+
 type Iobject = {
   [k: string]: any;
 };
