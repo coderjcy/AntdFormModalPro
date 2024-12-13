@@ -47,118 +47,116 @@
 | ---------- | -------- |
 | title      | 表单标题 |
 
-5. ### 实例属性（Exposes）
+6. ### 实例属性（Exposes）
 
 | **属性名** | **说明**               | **类型** |
 | ---------- | ---------------------- | -------- |
 | formData   | 表单数据               | object   |
 | formRef    | 组件中的 a-form 的实例 | object   |
 
-5. ### 黑夜模式：通过在 body 元素上添加“dark”类启用
+7. ### 黑夜模式：通过在 body 元素上添加“dark”类启用
 
-6. ### 添加下列代码到 /src/components.d.ts 文件中（用于类型提示）
+8. ### 添加下列代码到 /src/components.d.ts 文件中（用于类型提示）
 
-   ```typescript
-   import type { AntdFormModal, IProps2 as _IProps, IFormItem as _IFormItems } from "antd-form-modal-pro";
-   declare module "vue" {
-     export interface GlobalComponents {
-       AntdFormModal: AntdFormModal;
-     }
-   }
-   declare global {
-     interface IProps extends _IProps {}
-     interface IFormItem extends _IFormItems {}
-   }
-   export {};
-   ```
+```typescript
+import type { AntdFormModal, IProps2 as _IProps, IFormItem as _IFormItems } from "antd-form-modal-pro";
+declare module "vue" {
+  export interface GlobalComponents {
+    AntdFormModal: AntdFormModal;
+  }
+}
+declare global {
+  interface IProps extends _IProps {}
+  interface IFormItem extends _IFormItems {}
+}
+export {};
+```
 
-7. tsconfig.json文件中配置
+9. ### tsconfig.json文件中配置
 
-   ```json
-   {
-     "compilerOptions":{
-       "moduleResolution": "bundler",
-     }
-   }
-   ```
+```json
+{
+  "compilerOptions":{
+    "moduleResolution": "bundler",
+  }
+}
+```
 
-   
+10. ### 添加下列代码到 /src/main.ts 文件中
 
-8. ### 添加下列代码到 /src/main.ts 文件中
+```javascript
+import { createApp } from "vue";
+import App from "./App.vue";
+import AntdFormModal from "antd-form-modal-pro";
+import "antd-form-modal-pro/style.css";
+createApp(App).use(AntdFormModal).mount("#app");
+```
 
-   ```javascript
-   import { createApp } from "vue";
-   import App from "./App.vue";
-   import AntdFormModal from "antd-form-modal-pro";
-   import "antd-form-modal-pro/style.css";
-   createApp(App).use(AntdFormModal).mount("#app");
-   ```
+11. ### 示例
 
-9. ### 示例
+```html
+<template>
+  <div>
+    <antd-form-modal v-model="isShow" :formItems>
+      <template #test2="{formData,config}">
+        <input v-model="formData.test2" />
+      </template>
 
-   ```html
-   <template>
-     <div>
-       <antd-form-modal v-model="isShow" :formItems>
-         <template #test2="{formData,config}">
-           <input v-model="formData.test2" />
-         </template>
-   
-         <template #test3="{formData,config}">
-           <div>123</div>
-         </template>
-       </antd-form-modal>
-     </div>
-   </template>
-   ```
+      <template #test3="{formData,config}">
+        <div>123</div>
+      </template>
+    </antd-form-modal>
+  </div>
+</template>
+```
 
-   ```typescript
-   ,<script setup lang="ts">
-   import { ref } from "vue";
-   const isShow = ref(false);
-   const formItems = [
-     {
-   		label: "测试show",
-       prop: "test",
-       type: "input",
-     },
-     {
-       label: "姓名",
-       prop: "12",
-       type: "select",
-       labelWidth: "100px",
-       show:(formData)=>{
-         return formData.value.test === 'pass'
-       }
-       attrs: {
-         placeholder: "请选择",
-         options: [
-           { label: "a", value: "a" },
-           { label: "b", value: "b" },
-         ],
-         // 监听事件的第一种方法,会额外返回formData对象
-         "@change": (formData, ...args) => {
-           console.log("formData", formData);
-           console.log("args", args);
-         },
-       },
-       events: {
-         // 监听事件的第二种方法
-         change: (...args) => {
-           console.log("args", args);
-         },
-       },
-     },
-     {
-       type:'custom', //
-       label:'测试2',
-       prop:'test2', // 这里的prop作为插槽名
-     },
-     {
-       type:'custom-full',   // 类型为custom-full时，label部分也会消失，该部分完全自定义，所以无需设置label属性
-       prop:'test3',
-     },
-     // ......
-   ];
-   </script>
-   ```
+```typescript
+<script setup lang="ts">
+import { ref } from "vue";
+const isShow = ref(false);
+const formItems = [
+  {
+		label: "测试show",
+    prop: "test",
+    type: "input",
+  },
+  {
+    label: "姓名",
+    prop: "12",
+    type: "select",
+    labelWidth: "100px",
+    show:(formData)=>{
+      return formData.value.test === 'pass'
+    }
+    attrs: {
+      placeholder: "请选择",
+      options: [
+        { label: "a", value: "a" },
+        { label: "b", value: "b" },
+      ],
+      // 监听事件的第一种方法,会额外返回formData对象
+      "@change": (formData, ...args) => {
+        console.log("formData", formData);
+        console.log("args", args);
+      },
+    },
+    events: {
+      // 监听事件的第二种方法
+      change: (...args) => {
+        console.log("args", args);
+      },
+    },
+  },
+  {
+    type:'custom', //
+    label:'测试2',
+    prop:'test2', // 这里的prop作为插槽名
+  },
+  {
+    type:'custom-full',   // 类型为custom-full时，label部分也会消失，该部分完全自定义，所以无需设置label属性
+    prop:'test3',
+  },
+  // ......
+];
+</script>
+```
