@@ -34,7 +34,7 @@ interface IFormItem {
   events?: { [k: string]: Function };
 }
 
-interface IProps {
+interface IProps extends FormProps {
   formItems: IFormItem[];
   rules?: { [k: string]: RuleObject | RuleObject[] };
   span?: ISpan;
@@ -45,9 +45,8 @@ interface IProps {
   layout?: "horizontal" | "vertical";
   submitCallback?: (formData: Ref<{ [k: string]: any }>) => any;
 }
-type IProps2 = IProps & FormProps;
 type Iobject = {
   [k: string]: any;
 };
 
-export type { IProps, IProps2, IFormItem, Iobject };
+export type { IProps, IFormItem, Iobject };
