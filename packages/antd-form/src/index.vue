@@ -259,17 +259,8 @@ const watchTheme = () => {
   const targetNode = document.querySelector("body") as any;
   if ([...targetNode.classList].includes("dark")) _theme.value = darkAlgorithm;
   const observer = new MutationObserver((mutationsList, observer) => {
-    for (let mutation of mutationsList) {
-      if (mutation.attributeName === "class") {
-        if ([...targetNode.classList].includes("dark")) {
-          console.log("当前是暗黑模式");
-          _theme.value = darkAlgorithm;
-        } else {
-          console.log("当前不是暗黑模式");
-          _theme.value = defaultAlgorithm;
-        }
-      }
-    }
+    for (let mutation of mutationsList)
+      if (mutation.attributeName === "class") _theme.value = [...targetNode.classList].includes("dark") ? darkAlgorithm : defaultAlgorithm;
   });
   const config = { attributes: true, attributeFilter: ["class"] };
   observer.observe(targetNode, config);

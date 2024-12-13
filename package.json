@@ -1,6 +1,6 @@
 {
   "name": "antd-form-modal-pro",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "private": false,
   "keywords": [
     "vue3",
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
+    "sass": "^1.83.0",
     "vue": "^3.5.12"
   },
   "devDependencies": {
