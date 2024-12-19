@@ -1,6 +1,6 @@
 import type { RuleObject } from "ant-design-vue/es/form/interface";
 import type { ModalProps } from "ant-design-vue/es/modal/Modal";
-import type { Ref, PropType } from "vue";
+import type { Ref } from "vue";
 type IFormItemType =
   | "input"
   | "select"
@@ -35,9 +35,10 @@ interface IFormItem {
   events?: { [k: string]: Function };
 }
 
-interface IProps extends ModalProps {
+// interface IProps extends ModalProps {
+interface IProps {
   formItems: IFormItem[];
-  title?: string;
+  title?: string | string[];
   rules?: { [k: string]: RuleObject | RuleObject[] };
   span?: ISpan;
   labelWidth?: string;
@@ -51,10 +52,10 @@ interface IProps extends ModalProps {
   layout?: "horizontal" | "vertical";
   submitCallback?: (formData: Ref<{ [k: string]: any }>) => any;
 }
-// type IProps2 = IProps & ModalProps;
+type IProps2 = IProps & ModalProps;
 
 type Iobject = {
   [k: string]: any;
 };
 
-export type { IProps, IFormItem, Iobject };
+export type { IProps, IProps2, IFormItem, Iobject };

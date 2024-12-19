@@ -12,7 +12,7 @@
 | maxHeight             | 表单的最大高度，超出最大高度变为滚动              |                             string                             |              |      |
 | dateValueFormat       | 日期组件值的格式化规则                            | string[具体格式](https://day.js.org/docs/zh-CN/display/format) |      x       |      |
 | readonly              | 表单是否只读                                      |                            boolean                             |    false     |      |
-| title                 | 弹窗标题                                          |                             string                             |     表单     |      |
+| title                 | 弹窗标题                                          |                string ｜[string,string,string]                 |     表单     |      |
 | confirmButtonText     | 提交按钮的文字内容                                |                             string                             |     保存     |      |
 | cancellButtonText     | 取消按钮的文字内容                                |                             string                             |     取消     |      |
 | data                  | 表单内容回显数据                                  |                             object                             |              |      |
@@ -49,16 +49,19 @@
 
 6. ### 实例属性（Exposes）
 
-| **属性名** | **说明**               | **类型** |
-| ---------- | ---------------------- | -------- |
-| formData   | 表单数据               | object   |
-| formRef    | 组件中的 a-form 的实例 | object   |
+| **属性名** | **说明**               | **类型**       |
+| ---------- | ---------------------- | -------------- |
+| formData   | 表单数据               | object         |
+| formRef    | 组件中的 a-form 的实例 | object         |
+| create     | 新增表单               | () => void     |
+| update     | 修改表单               | (data) => void |
+| Info       | 查看表单               | (data) => void |
 
 7. ### 黑夜模式：通过在 body 元素上添加“dark”类启用
 8. ### 添加下列代码到 /src/components.d.ts 文件中（用于类型提示）
 
 ```typescript
-import type { AntdFormModal, IProps as _IProps, IFormItem as _IFormItems } from "antd-form-modal-pro";
+import type { AntdFormModal, IProps2 as _IProps, IFormItem as _IFormItems } from "antd-form-modal-pro";
 declare module "vue" {
   export interface GlobalComponents {
     AntdFormModal: AntdFormModal;

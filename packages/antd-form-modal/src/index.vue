@@ -1,7 +1,7 @@
 <template>
   <a-modal v-model:open="isShow" :destroy-on-close="true" :afterClose="handleClose" width="1000px">
     <template #title>
-      <slot name="title">{{ title }}</slot>
+      <slot name="title">{{ _title }}</slot>
     </template>
     <a-config-provider :locale="zhCN" :theme="{ algorithm: _theme }">
       <a-form
@@ -11,7 +11,7 @@
         :layout
         :labelWrap="true"
         :style="{ '--label-width': labelWidth, maxHeight, minHeight }"
-        :disabled="readonly"
+        :disabled="_readonly"
         @finish="handleSubmit"
       >
         <a-row>
@@ -156,8 +156,7 @@
             </template>
           </template>
         </a-row>
-        <slot name="other" :formData="formData"></slot>
-        <div v-if="!readonly" style="position: absolute; bottom: 20px; right: 24px; display: flex; justify-content: flex-end">
+        <div v-if="!_readonly" style="position: absolute; bottom: 20px; right: 24px; display: flex; justify-content: flex-end">
           <a-button style="margin-right: 10px" @click="isShow = false">
             <template #icon>
               <CloseOutlined />
@@ -175,7 +174,7 @@
     </a-config-provider>
 
     <template #footer>
-      <div v-if="!readonly" style="height: 32px; width: 100%"></div>
+      <div v-if="!_readonly" style="height: 32px; width: 100%"></div>
     </template>
   </a-modal>
 </template>
@@ -273,16 +272,37 @@ const handlePreview = async (file: any) => {
   previewInfo.value.visible = true;
   previewInfo.value.title = file.name || file.url.substring(file.url.lastIndexOf("/") + 1);
 };
-watch(
-  () => props.data,
-  (newData) => {
-    if (newData && Object.keys(newData).length) Object.keys(formData.value).forEach((key) => (formData.value[key] = newData[key]));
-    else for (const item of props.formItems) formData.value[item.prop] = item.initialValue;
-  }
-);
+const updateFormData = (newData?: any) => {
+  if (newData && Object.keys(newData).length) Object.keys(formData.value).forEach((key: any) => (formData.value[key] = newData[key]));
+  else for (const item of props.formItems) formData.value[item.prop] = item.initialValue;
+};
+
+const _readonly = ref<boolean>();
+const _title = ref();
+const create = () => {
+  isShow.value = true;
+  _readonly.value = false;
+  Array.isArray(props.title) && (_title.value = props.title[0]);
+  updateFormData();
+};
+const update = (data: object) => {
+  isShow.value = true;
+  _readonly.value = false;
+  Array.isArray(props.title) && (_title.value = props.title[1]);
+  updateFormData(data);
+};
+const info = (data: object) => {
+  isShow.value = true;
+  _readonly.value = true;
+  Array.isArray(props.title) && (_title.value = props.title[2]);
+  updateFormData(data);
+};
 defineExpose({
   formRef,
   formData,
+  create,
+  update,
+  info,
 });
 const _theme = ref(defaultAlgorithm);
 const watchTheme = () => {
@@ -297,6 +317,24 @@ const watchTheme = () => {
 };
 setupForm();
 watchTheme();
+
+watch(() => props.data, updateFormData);
+watch(
+  () => props.readonly,
+  (v) => (_readonly.value = v),
+  {
+    immediate: true,
+  }
+);
+watch(
+  () => props.title,
+  (v) => {
+    if (typeof v === "string") _title.value = v;
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <style scoped>
