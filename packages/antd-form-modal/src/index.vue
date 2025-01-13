@@ -106,7 +106,21 @@
                   </template>
                   <!-- 下拉选择 -->
                   <template v-else-if="item.type === 'select'">
-                    <a-select v-model:value="formData[item.prop]" :placeholder="`请选择${item.label}`" v-bind="item.attrs" v-on="item.events ?? {}">
+                    <SelectPage
+                      v-if="item.pagination"
+                      v-model:value="formData[item.prop]"
+                      :placeholder="`请选择${item.label}`"
+                      v-bind="item.attrs"
+                      v-on="item.events ?? {}"
+                      :requestFn="item.pagination"
+                    />
+                    <a-select
+                      v-else
+                      v-model:value="formData[item.prop]"
+                      :placeholder="`请选择${item.label}`"
+                      v-bind="item.attrs"
+                      v-on="item.events ?? {}"
+                    >
                     </a-select>
                   </template>
                   <!--  图片上传 -->
@@ -184,7 +198,7 @@ import { ref, computed, watch } from "vue";
 import { CheckOutlined, CloseOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import { theme } from "ant-design-vue";
-
+import SelectPage from "./cpns/SelectPage.vue";
 import type { IProps, Iobject } from "./type.js";
 import type { FormInstance } from "ant-design-vue";
 import "dayjs/locale/zh-cn";
@@ -303,6 +317,7 @@ defineExpose({
   create,
   update,
   info,
+  isShow,
 });
 const _theme = ref(defaultAlgorithm);
 const watchTheme = () => {

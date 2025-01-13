@@ -33,7 +33,7 @@
 | show         | 控制该表单项是否展示的计算函数 |                                                               (formData: Ref) => boolean;                                                                |      |      |
 | attrs        | 表单项上需要绑定的原生属性     |                                                                          object                                                                          |      |      |
 | events       | 表单项需要监听的原生事件       |                                                                          object                                                                          |      |      |
-|              |                                |                                                                                                                                                          |      |      |
+| pagination | type为select时，传入该属性用于实现分页选择项的设置 | (keyword: string, page: number)=>Promise |      |      |
 
 4. ### 事件
 

@@ -21,6 +21,8 @@ import {
   InputNumber,
   Upload,
   ConfigProvider,
+  Pagination,
+  Divider,
 } from "ant-design-vue";
 const components = [
   Modal,
@@ -43,6 +45,8 @@ const components = [
   InputNumber,
   Upload,
   ConfigProvider,
+  Pagination,
+  Divider,
 ];
 export type * from "./src/type.ts";
 export type AntdFormModal = typeof AntdFormModal;

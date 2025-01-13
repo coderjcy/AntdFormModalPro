@@ -1,6 +1,7 @@
 import type { RuleObject } from "ant-design-vue/es/form/interface";
 import type { ModalProps } from "ant-design-vue/es/modal/Modal";
 import type { Ref } from "vue";
+import type { IRequestFn } from "./cpns/type";
 type IFormItemType =
   | "input"
   | "select"
@@ -22,7 +23,7 @@ type IFormItemType =
 
 type ISpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
 
-interface IFormItem {
+interface IFormItemBase {
   label: string;
   prop: string;
   type: IFormItemType;
@@ -35,7 +36,17 @@ interface IFormItem {
   events?: { [k: string]: Function };
 }
 
-// interface IProps extends ModalProps {
+interface IFormItemWithPagination extends IFormItemBase {
+  type: "select";
+  pagination?: IRequestFn;
+}
+
+interface IFormItemWithoutPagination extends IFormItemBase {
+  type: Exclude<IFormItemType, "select">;
+}
+
+type IFormItem = IFormItemWithPagination | IFormItemWithoutPagination;
+
 interface IProps {
   formItems: IFormItem[];
   title?: string | string[];
@@ -58,4 +69,4 @@ type Iobject = {
   [k: string]: any;
 };
 
-export type { IProps, IProps2, IFormItem, Iobject };
+export type { IProps, IProps2, IFormItem, Iobject, IFormItemWithPagination, IFormItemWithoutPagination };
