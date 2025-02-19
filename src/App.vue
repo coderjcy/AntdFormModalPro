@@ -32,6 +32,23 @@ const config: IProps2 = {
         return { options: res.data.list?.map((item: any) => ({ label: item.typeName, value: item.id })) || [], total: res.data.total };
       },
     },
+    {
+      type: "select",
+      label: "123",
+      prop: "b",
+      attrs: {
+        options: [
+          {
+            label: "啊啊啊",
+            value: "123",
+          },
+          {
+            label: "请问",
+            value: "332",
+          },
+        ],
+      },
+    },
   ],
 };
 const ee = ref<InstanceType<typeof antdFormModal>>();

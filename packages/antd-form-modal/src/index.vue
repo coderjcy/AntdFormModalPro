@@ -118,8 +118,9 @@
                       v-else
                       v-model:value="formData[item.prop]"
                       :placeholder="`请选择${item.label}`"
+                      show-search
+                      optionFilterProp="label"
                       v-bind="item.attrs"
-                      v-on="item.events ?? {}"
                     >
                     </a-select>
                   </template>
@@ -171,18 +172,21 @@
           </template>
         </a-row>
         <div v-if="!_readonly" style="position: absolute; bottom: 20px; right: 24px; display: flex; justify-content: flex-end">
-          <a-button style="margin-right: 10px" @click="isShow = false">
-            <template #icon>
-              <CloseOutlined />
-            </template>
-            {{ cancelButtonText }}</a-button
-          >
-          <a-button type="primary" html-type="submit">
-            <template #icon>
-              <CheckOutlined />
-            </template>
-            {{ confirmButtonText }}</a-button
-          >
+          <slot name="handle">
+            <a-button style="margin-right: 10px" @click="isShow = false">
+              <template #icon>
+                <CloseOutlined />
+              </template>
+              {{ cancelButtonText }}</a-button
+            >
+
+            <a-button type="primary" html-type="submit">
+              <template #icon>
+                <CheckOutlined />
+              </template>
+              {{ confirmButtonText }}</a-button
+            >
+          </slot>
         </div>
       </a-form>
     </a-config-provider>
@@ -271,6 +275,7 @@ const getBase64 = (file: File) => {
     reader.onerror = (error) => reject(error);
   });
 };
+
 const previewInfo = ref({
   visible: false,
   image: "",
@@ -287,7 +292,9 @@ const handlePreview = async (file: any) => {
   previewInfo.value.title = file.name || file.url.substring(file.url.lastIndexOf("/") + 1);
 };
 const updateFormData = (newData?: any) => {
-  if (newData && Object.keys(newData).length) Object.keys(formData.value).forEach((key: any) => (formData.value[key] = newData[key]));
+  // if (newData && Object.keys(newData).length) Object.keys(formData.value).forEach((key: any) => (formData.value[key] = newData[key]));  // 1
+  // if (newData && Object.keys(newData).length) props.formItems.forEach((i: any) => (formData.value[i.prop] = newData[i.prop]));  // 2
+  if (newData && Object.keys(newData).length) Object.keys(newData).forEach((key: any) => (formData.value[key] = newData[key]));
   else for (const item of props.formItems) formData.value[item.prop] = item.initialValue;
 };
 
